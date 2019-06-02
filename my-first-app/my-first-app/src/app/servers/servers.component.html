@@ -1,2 +1,29 @@
-<app-server></app-server>
-<app-server></app-server>
+<div id='data binding examples'>
+    <h3>String interpolation</h3>
+    <p>{{ allowNewServer }}</p>
+
+    <h3>Property binding and Event binding</h3>
+    
+    <p [innerText]="serverName"></p>
+    <input 
+    type="text"
+    class="form-control"
+    (input)="onUpdateServerName($event)">
+    
+    
+    <p [innerText]="serverCreationStatus"></p>
+    <button 
+        class="btn btn-primary" 
+        [disabled]="!allowNewServer"
+        (click)="onCreateServer()">Add server</button>
+
+    <h3>Two way data binding example</h3>
+    
+    <input 
+    type="text"
+    class="form-control"
+    [(ngModel)]="serverName">
+
+    <app-server></app-server>
+    <app-server></app-server>
+</div>
