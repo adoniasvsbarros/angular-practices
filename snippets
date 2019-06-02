@@ -1,0 +1,30 @@
+List of Snippets/Concepts important inside the course
+
+#####################################################################################################
+SECTION 1 - GETTING STARTED
+#####################################################################################################
+
+* Angular CLI (Command Line Interface) commands to start a project
+
+npm install -g @angular/cli
+ng new [app_name]
+cd [app_name]
+ng serve
+
+#####################################################################################################
+SECTION 2 - THE BASICS
+#####################################################################################################
+
+* Creating a new component from the CLI
+ng generate component [component_name]
+ng g c [component_name]
+
+
+* Referencing HTML and CSS in a component
+
+Inside the @Component
+
+referencing an external html:  templateUrl: './[component_name].component.html',
+referencing an internal html:  template: `html comes here`
+referencing an external css:    styleUrls: [ './path_to_css']
+referencing an internal css:    styles: [`style { property: property }`]
