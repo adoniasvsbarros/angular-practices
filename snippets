@@ -21,10 +21,84 @@ ng g c [component_name]
 
 
 * Referencing HTML and CSS in a component
-
 Inside the @Component
 
 referencing an external html:  templateUrl: './[component_name].component.html',
 referencing an internal html:  template: `html comes here`
 referencing an external css:    styleUrls: [ './path_to_css']
 referencing an internal css:    styles: [`style { property: property }`]
+
+* String interpolation
+    typescript 
+        export class ServerComponent {
+            serverId = 10;
+            serverStatus = 'offline';
+
+            getServerStatus(){
+                return this.serverStatus;
+            }
+        }
+    html
+        <p>Server with ID {{ serverId }} is {{ getServerStatus() }} </p>
+
+* Property Binding
+    typescript
+        export class ServersComponent implements OnInit {
+            allowNewServer = false;
+
+            constructor() { 
+                setTimeout(() => {
+                this.allowNewServer = true;
+                } ,2000);
+            }
+        }
+    html
+        <button [disabled]="!allowNewServer">Add server</button>
+        <p [innerText]="allowNewServer"></p>
+
+* Event Binding
+    typescript
+        export class ServersComponent implements OnInit {
+            allowNewServer = false;
+            serverCreationStatus = 'No server was created'
+
+            onCreateServer(){
+                this.serverCreationStatus = 'Server was created'
+            }
+
+        }
+    html
+        <button (click)="onCreateServer()">Add server</button>
+
+* Two Way Binding
+    typescript
+    export class ServersComponent implements OnInit {
+        serverName = 'TestServer';
+
+        onUpdateServerName(event: any){
+            this.serverName = (<HTMLInputElement>event.target).value
+        }
+    }
+}
+    html
+        <p [innerText]="serverName"></p>
+        <input 
+            type="text"
+            class="form-control"
+            [(ngModel)]="serverName">
+
+* ngIf directive
+    <p *ngIf="serverCreated; else noServer">Server was created, servername is {{ serverName }} </p>
+    <ng-template #noServer>
+        <p>No server was created </p>
+    </ng-template>
+
+* ngFor directive
+    <app-server *ngFor="let server of servers"></app-server>
+
+* ngStyle directive and ngClass directive
+    <p 
+        [ngStyle]="{backgroundColor: getColor()}"
+        [ngClass]="{online: serverStatus === 'online'}">
+        Server with ID {{ serverId }} is {{ getServerStatus() }} 
+    </p>
