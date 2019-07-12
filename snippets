@@ -29,7 +29,7 @@ referencing an external css:    styleUrls: [ './path_to_css']
 referencing an internal css:    styles: [`style { property: property }`]
 
 * String interpolation
-    typescript 
+    - typescript 
         export class ServerComponent {
             serverId = 10;
             serverStatus = 'offline';
@@ -38,11 +38,11 @@ referencing an internal css:    styles: [`style { property: property }`]
                 return this.serverStatus;
             }
         }
-    html
+    - html
         <p>Server with ID {{ serverId }} is {{ getServerStatus() }} </p>
 
 * Property Binding
-    typescript
+    - typescript
         export class ServersComponent implements OnInit {
             allowNewServer = false;
 
@@ -52,12 +52,12 @@ referencing an internal css:    styles: [`style { property: property }`]
                 } ,2000);
             }
         }
-    html
+    - html
         <button [disabled]="!allowNewServer">Add server</button>
         <p [innerText]="allowNewServer"></p>
 
 * Event Binding
-    typescript
+    - typescript
         export class ServersComponent implements OnInit {
             allowNewServer = false;
             serverCreationStatus = 'No server was created'
@@ -67,20 +67,19 @@ referencing an internal css:    styles: [`style { property: property }`]
             }
 
         }
-    html
+    - html
         <button (click)="onCreateServer()">Add server</button>
 
 * Two Way Binding
-    typescript
-    export class ServersComponent implements OnInit {
-        serverName = 'TestServer';
+    - typescript
+        export class ServersComponent implements OnInit {
+            serverName = 'TestServer';
 
-        onUpdateServerName(event: any){
-            this.serverName = (<HTMLInputElement>event.target).value
+            onUpdateServerName(event: any){
+                this.serverName = (<HTMLInputElement>event.target).value
+            }
         }
-    }
-}
-    html
+    - html
         <p [innerText]="serverName"></p>
         <input 
             type="text"
@@ -102,3 +101,84 @@ referencing an internal css:    styles: [`style { property: property }`]
         [ngClass]="{online: serverStatus === 'online'}">
         Server with ID {{ serverId }} is {{ getServerStatus() }} 
     </p>
+
+
+#####################################################################################################
+SECTION 5 - COMPONENTS & DATABINDING DEEP DIVE
+#####################################################################################################
+
+* Binding to custom property
+    - element typescript
+        export class ServerElementComponent implements OnInit {
+            @Input() element: {type: string, name: string, content: string};
+        }
+    - app html
+        <app-server-element 
+            *ngFor="let serverElement of serverElements"
+            [element]="serverElement">
+        </app-server-element>
+
+    * Assigning it an alias
+        - typescript
+            @Input('propertyAlias')
+        - html
+            <element [propertyAlias] = "variable"></element>
+
+* Binding to custom event
+    - app typescript (listening event)
+        onServerAdded(serverData: {serverName: string, serverContent: string}) {
+            this.serverElements.push({
+            type: 'server',
+            name: serverData.serverName,
+            content: serverData.serverContent
+            }); 
+        }
+
+    - app html
+        <app-cokpit 
+            (serverCreated)="onServerAdded($event)"
+            (bpCreated)="onBlueprintAdded($event)" >
+        </app-cokpit>
+
+    - element typescript (invoking event)
+        export class CokpitComponent implements OnInit {
+            @Output() serverCreated = new EventEmitter<{serverName: string, serverContent: string}>();
+
+            onAddServer() {
+                this.serverCreated.emit({
+                serverName: this.newServerName, 
+                serverContent: this.newServerContent
+                });
+            }
+        }
+    
+    - element html
+        <div>
+            <label>Server Name</label>
+            <input type="text" class="form-control" [(ngModel)]="newServerName">
+            <label>Server Content</label>
+            <input type="text" class="form-control" [(ngModel)]="newServerContent">
+            <br>
+            <button
+            class="btn btn-primary"
+            (click)="onAddServer()">Add Server</button>
+        </div>
+
+    * Assigning it alias
+        - typescript
+            @Output('bpCreated')
+        - html
+            (bpCreated)="onBlueprintAdded($event)" 
+
+*  Changing view encapsulation
+    @Component({
+        encapsulation: ViewEncapsulation.None // sets css globally, other opts are none, emulated, and shadowdom
+    })
+
+* Using local references in templates
+    <input type="text" class="form-control" [(ngModel)]="newServerName" #serverNameInput> (works in the element)
+    serverNameInput.value catchs the value inserted in the input
+
+    <button
+        class="btn btn-primary"
+        (click)="onAddServer(serverNameInput)">Add Server</button>
