@@ -176,9 +176,80 @@ SECTION 5 - COMPONENTS & DATABINDING DEEP DIVE
     })
 
 * Using local references in templates
+    - html
     <input type="text" class="form-control" [(ngModel)]="newServerName" #serverNameInput> (works in the element)
     serverNameInput.value catchs the value inserted in the input
 
     <button
         class="btn btn-primary"
         (click)="onAddServer(serverNameInput)">Add Server</button>
+
+    - typescript
+        onAddServer(nameInput: HTMLInputElement) {
+            this.serverCreated.emit({
+            serverName: nameInput.value, 
+            serverContent: this.newServerContent
+         });
+  }
+
+* Getting access to template and DOM with @ViewChild
+    - html
+        <input 
+        type="text" 
+        class="form-control"  
+        #serverNameInput>
+
+    - typescript
+        export class CokpitComponent implements OnInit {
+            @ViewChild('serverNameInput', {static: true}) serverContentInput: ElementRef;
+         
+            onAddServer(nameInput: HTMLInputElement) {
+            console.log(this.serverContentInput);
+            this.serverCreated.emit({
+            serverName: nameInput.value, 
+            serverContent: this.serverContentInput.nativeElement.value
+            });
+            }
+        }
+
+* Projecting content into components with ng-content
+    - element html
+        <div
+        class="panel panel-default">
+            <div class="panel-heading">{{ element.name }}
+            </div>
+            <div class="panel-body">
+                <ng-content></ng-content>
+            </div>
+        </div>
+
+    - parent html
+
+        <app-server-element 
+        *ngFor="let serverElement of serverElements"
+        [srvElement]="serverElement">
+          <p>
+            <strong *ngIf="element.type === 'server'" style="color: red">{{ element.content }}</strong>
+            <em *ngIf="element.type === 'blueprint'">{{ element.content }}</em>
+          </p>
+        </app-server-element>
+
+    * The p tag content inside the >< will be injected into the element html
+
+* Lifecycle Hooks
+    - ngOnChanges
+    - ngOnInit
+    - ngDoCheck
+    - ngAfterContentInit
+    - ngAfterContentChecked
+    - ngAfterViewInit
+    - ngAfterViewChecked
+    - ngOnDestroy
+
+* Getting access to ng-content with content ContentChild
+    - html
+        <p #contentParagraph>
+    - typescript
+        @ContentChild('contentParagraph', {static: true}) paragraph : ElementRef;
+
+        console.log('text content of paragraph ' + this.paragraph.nativeElement.textContent);
