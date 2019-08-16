@@ -27,7 +27,8 @@
               </li>
             </ul>
             <p appBasicHighlight>Style with basic directive</p>
-            <p appBetterHighlight>Style with basic directive</p>
+            <p [appBetterHighlight]="'red'" defaultColor="yellow">Style with basic directive</p>
+            <p [appBetterHighlight]="'red'" [defaultColor]="'yellow'">Style with basic directive</p>
       </div>
     </div>
   </div>
