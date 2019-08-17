@@ -253,3 +253,170 @@ SECTION 5 - COMPONENTS & DATABINDING DEEP DIVE
         @ContentChild('contentParagraph', {static: true}) paragraph : ElementRef;
 
         console.log('text content of paragraph ' + this.paragraph.nativeElement.textContent);
+
+
+#####################################################################################################
+SECTION 7 - DIRECTIVES DEEP DIVE
+#####################################################################################################
+
+    * Basic attribute directive
+        typescript
+            @Directive({
+                selector: '[appBasicHighlight]'
+            })
+            export class BasicHighlightDirective implements OnInit{
+                constructor(private elementRef: ElementRef) {
+                }
+
+                ngOnInit() {
+                    this.elementRef.nativeElement.style.backgroundColor = 'green';
+                }
+            }
+        html
+            <p appBasicHighlight>Style with basic directive</p>
+
+    * Improved attribute directive
+        typescript
+            @Directive({
+                selector: '[appBetterHighlight]'
+            })
+            export class BetterHighlightDirective implements OnInit{
+                constructor(private elRef: ElementRef, private renderer: Renderer2) { }
+
+                ngOnInit(){
+                    this.renderer.setStyle(this.elRef.nativeElement, 'background-color', 'blue')
+                }
+            }
+
+        html
+            <p appBetterHighlight>Style with basic directive</p>
+
+    * Using HostListener to listen to host events
+        @HostListener('mouseenter') mouseover(eventData: Event) {
+            this.renderer.setStyle(this.elRef.nativeElement, 'background-color', 'blue')
+        }
+
+        @HostListener('mouseleave') mouseleave(eventData: Event) {
+            this.renderer.setStyle(this.elRef.nativeElement, 'background-color', 'transparent')
+        }
+    
+    * Using HostBinding to bind to host properties
+        @HostBinding('style.backgroundColor') backgroundColor: string = 'transparent';
+
+          @HostListener('mouseenter') mouseover(eventData: Event) {
+            this.backgroundColor = 'blue';
+        }
+
+    * Binding to directive properties
+        typescript
+            @Directive({
+                selector: '[appBetterHighlight]'
+            })
+            export class BetterHighlightDirective implements OnInit{
+                @Input() defaultColor: string = 'transparent';
+                @Input('appBetterHighlight') highlightColor: string = 'blue';
+                @HostBinding('style.backgroundColor') backgroundColor: string = this.defaultColor;
+
+                constructor(private elRef: ElementRef, private renderer: Renderer2) { }
+
+                ngOnInit(){
+                    this.backgroundColor = this.defaultColor;
+                }
+
+                @HostListener('mouseenter') mouseover(eventData: Event) {
+                    this.backgroundColor = this.highlightColor;
+                }
+
+                @HostListener('mouseleave') mouseleave(eventData: Event) {
+                    this.backgroundColor = this.defaultColor;
+                }
+            }
+        html
+            <p [appBetterHighlight]="'red'" defaultColor="yellow">Style with basic directive</p>
+            <p [appBetterHighlight]="'red'" [defaultColor]="'yellow'">Style with basic directive</p>
+    * Behind the scenes of structural directives 
+        this
+
+        <div *ngIf="!onlyOdd">
+            <li
+                class="list-group-item"
+                [ngClass]="{odd: even % 2 !== 0}"
+                [ngStyle]="{backgroundColor: even % 2 !== 0 ? 'yellow' : 'transparent'}"
+                *ngFor="let even of evenNumbers">
+                {{ even }}
+            </li>
+        </div>
+
+        becomes
+
+        <ng-template [ngIf]="!onlyOdd">
+            <div>
+                <li>
+                    class="list-group-item"
+                    [ngClass]="{odd: even % 2 !== 0}"
+                    [ngStyle]="{backgroundColor: even % 2 !== 0 ? 'yellow' : 'transparent'}"
+                    *ngFor="let even of evenNumbers">
+                    {{ even }}
+                </li>
+            </div>
+        </ng-template>
+
+    * Structural Directive
+        html
+            <div *appUnless="onlyOdd">
+                <li
+                    class="list-group-item"
+                    [ngClass]="{odd: even % 2 !== 0}"
+                    [ngStyle]="{backgroundColor: even % 2 !== 0 ? 'yellow' : 'transparent'}"
+                    *ngFor="let even of evenNumbers">
+                        {{ even }}
+                </li>
+            </div>
+        typescript
+            @Directive({
+                selector: '[appUnless]'
+            })
+            export class UnlessDirective {
+                @Input() set appUnless(condition: boolean){
+                    if(!condition){
+                    this.vcRef.createEmbeddedView(this.templateRef);
+                    } else {
+                    this.vcRef.clear();
+                    }
+                }
+                constructor(private templateRef: TemplateRef<any>, private vcRef: ViewContainerRef) { }
+            }
+
+    * ngSwitch
+        <div [ngSwitch]="value">
+            <p *ngSwitchCase="5">Value is 5</p>
+            <p *ngSwitchCase="10">Value is 10</p>
+            <p *ngSwitchCase="100">Value is 100</p>
+            <p *ngSwitchDefault >Value is Default</p>
+        </div>
+
+
+#####################################################################################################
+SECTION 9 - USING SERVICES AND DEPENDENCY INJECTION
+#####################################################################################################
+    * Creating a Service and Injecting it
+        service example
+            export class LoggingService {
+                logStatusChange(status: string){
+                    console.log('A server status changed, new status: ' + status);
+                }
+            }
+
+        class that uses the service
+            @Component({
+                providers: [LoggingService]
+            })
+            export class AccountComponent {
+
+                constructor(private loggingService: LoggingService) {}
+
+                onSetTo(status: string) {
+                    this.loggingService.logStatusChange(status);
+                }
+            }
+            
