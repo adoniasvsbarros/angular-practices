@@ -419,4 +419,37 @@ SECTION 9 - USING SERVICES AND DEPENDENCY INJECTION
                     this.loggingService.logStatusChange(status);
                 }
             }
+
+    * Using a service into another service
+            @Injectable()
+            export class AccountService {
+                accounts = [
+                    {
+                    name: 'Master Account',
+                    status: 'active'
+                    }
+                ];
+
+                constructor(private loggingService: LoggingService){}
+
+                addAccount(name: string, status: string){
+                    this.accounts.push({name: name, status: status});
+                    this.loggingService.logStatusChange(status);
+                }
+
+            }
+    
+    * A service provided somewhere on module level is an app-wide Singleton (if it is not overwritten somewhere on component level).
+    * A service provided in a component shares the same instance between this component and its descendants (if it is not overwritten there).
+    
+    * Providing a service globaly
+        @NgModule({
+            declarations: [
+            ],
+            imports: [
+            ],
+            providers: [ShoppingListService],
+            
+        })
+        export class AppModule { }
             
