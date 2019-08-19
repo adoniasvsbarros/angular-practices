@@ -510,4 +510,70 @@ SECTION 11 - CHANGING PAGES WITH ROUTES
                 this.router.navigate(['/servers']);
             }
         }
+
+    * Navigate with relative path
+        import { Router, ActivatedRoute } from '@angular/router';
+        export class ServersComponent implements OnInit {
+            private servers: {id: number, name: string, status: string}[] = [];
+
+            constructor(private router: Router, private route: ActivatedRoute) { }
+
+            onReload(){
+                this.router.navigate(['servers'], {relativeTo: this.route})
+            }
+
+        }
+
+        * the default relative path is the root path
+
+    * Dinamically using parameters in routes
+        const appRoutes: Routes = [
+            {path: '', component: HomeComponent},
+            {path: 'users/:id', component: UserComponent}
+        ]
+
+    * Fetching route parameters
+      app.module.ts
+        const appRoutes: Routes = [
+            {path: 'users/:id/:name', component: UserComponent}
+        ]
+
+      user.component.ts
+        export class UserComponent implements OnInit {
+            user: {id: number, name: string};
+
+            constructor(private route: ActivatedRoute) { }
+
+            ngOnInit() {
+                this.user = {
+                id: this.route.snapshot.params['id'],
+                name: this.route.snapshot.params['name']
+                }
+            
+                this.route.params.subscribe(
+                    (params) => {
+                        this.user.id = params['id'];
+                        this.user.name = params['name'];
+                    }
+                );
+            }
+        }
+
+      user.component.html
+        <p>User with {{ user.id }} loaded.</p>
+        <p>User name is {{ user.name }}</p>
+    
+    * When using observables, remember to unsubscribe them
+        import { Subscription } from 'rxjs';
+
+        export class UserComponent implements OnInit, OnDestroy {
+        
+            paramsSubscription: Subscription;
+
+            ngOnDestroy() {
+                this.paramsSubscription.unsubscribe();
+            }
+            
+        }
+
     
