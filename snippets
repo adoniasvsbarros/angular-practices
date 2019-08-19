@@ -453,3 +453,30 @@ SECTION 9 - USING SERVICES AND DEPENDENCY INJECTION
         })
         export class AppModule { }
             
+#####################################################################################################
+SECTION 11 - CHANGING PAGES WITH ROUTES
+#####################################################################################################
+
+    * Setting up and loading routes
+        ts
+            import { Routes, RouterModule } from '@angular/router'
+            
+            const appRoutes: Routes = [
+                {path: '', component: HomeComponent},
+                {path: 'users', component: UsersComponent},
+                {path: 'servers', component: ServersComponent}
+            ]
+
+            @NgModule({
+                declarations: [
+                ],
+                imports: [
+                    RouterModule.forRoot(appRoutes)
+                ],
+                providers: [],
+                bootstrap: []
+            })
+            export class AppModule { }
+    
+    * html
+            <router-outlet></router-outlet>
