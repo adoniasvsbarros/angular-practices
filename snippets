@@ -481,7 +481,7 @@ SECTION 11 - CHANGING PAGES WITH ROUTES
         html
             <router-outlet></router-outlet>
     * Navigating with router links
-<ul class="nav nav-tabs">
+      <ul class="nav nav-tabs">
         <li 
           role="presentation" 
           routerLinkActive="active"
@@ -499,4 +499,15 @@ SECTION 11 - CHANGING PAGES WITH ROUTES
           [routerLinkActiveOptions]="{exact: true}">
           <a [routerLink]="['/users']">Users</a></li>
       </ul>
+
+    * Navigating programatically
+        import { Router } from '@angular/router';
+        export class HomeComponent implements OnInit {
+
+            constructor(private router: Router) { }
+
+            onLoadServers(){
+                this.router.navigate(['/servers']);
+            }
+        }
     
