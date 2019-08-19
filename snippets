@@ -481,9 +481,22 @@ SECTION 11 - CHANGING PAGES WITH ROUTES
         html
             <router-outlet></router-outlet>
     * Navigating with router links
-          <ul class="nav nav-tabs">
-            <li role="presentation" class="active"><a routerLink="/">Home</a></li>
-            <li role="presentation"><a routerLink="/servers">Servers</a></li>
-            <li role="presentation"><a [routerLink]="['/users']">Users</a></li>
-         </ul>
+<ul class="nav nav-tabs">
+        <li 
+          role="presentation" 
+          routerLinkActive="active"
+          [routerLinkActiveOptions]="{exact: true}">
+          <a routerLink="/">Home</a></li>
+        <li 
+          role="presentation" 
+          routerLinkActive="active"
+          [routerLinkActiveOptions]="{exact: true}"
+          >
+          <a routerLink="/servers">Servers</a></li>
+        <li 
+          role="presentation" 
+          routerLinkActive="active"
+          [routerLinkActiveOptions]="{exact: true}">
+          <a [routerLink]="['/users']">Users</a></li>
+      </ul>
     
