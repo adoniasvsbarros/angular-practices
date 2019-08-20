@@ -579,10 +579,12 @@ SECTION 11 - CHANGING PAGES WITH ROUTES
     * Passing query parameters and fragments
         static
             <a
-                [routerLink]="['/servers', 5, 'edit']"
+                [routerLink]="['/servers', server.id]"
                 [queryParams]="{allowEdit:'1'}"
                 fragment="loading"
-                href="#">
+                href="#"
+                class="list-group-item"
+                *ngFor="let server of servers">
                 {{ server.name }}
             </a>
         dinamic
@@ -597,3 +599,18 @@ SECTION 11 - CHANGING PAGES WITH ROUTES
             console.log(this.route.snapshot.fragment);
             this.route.params.subscribe();
         }
+
+    * Nested routes
+        const appRoutes: Routes = [
+            {path: 'servers', component: ServersComponent, children: [
+                {path: ':id', component: ServerComponent},
+                {path: ':id/edit', component: EditServerComponent}
+            ]}
+        ]
+
+        html ( use a child router outlet )
+            <router-outlet></router-outlet>
+
+    
+
+]
