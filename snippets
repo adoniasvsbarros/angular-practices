@@ -576,4 +576,24 @@ SECTION 11 - CHANGING PAGES WITH ROUTES
             
         }
 
-    
+    * Passing query parameters and fragments
+        static
+            <a
+                [routerLink]="['/servers', 5, 'edit']"
+                [queryParams]="{allowEdit:'1'}"
+                fragment="loading"
+                href="#">
+                {{ server.name }}
+            </a>
+        dinamic
+            this.router.navigate(['/servers', id, 'edit'], {queryParams: {allowEdit: '1'}, fragment: 'loading'});
+
+    * Retrieving query params and fragments
+        
+        constructor(private route: ActivatedRoute) { }
+        
+        ngOnInit() {
+            console.log(this.route.snapshot.queryParams);
+            console.log(this.route.snapshot.fragment);
+            this.route.params.subscribe();
+        }
