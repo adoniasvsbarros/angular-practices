@@ -747,6 +747,8 @@ SECTION 11 - CHANGING PAGES WITH ROUTES
     
     * Protecting routes with canActivate
 
+        * Fake Auth Service
+
         auth.service.ts
             export class AuthService {
                 loggedIn = false;
@@ -771,6 +773,28 @@ SECTION 11 - CHANGING PAGES WITH ROUTES
                     this.loggedIn = false;
                 }
             }
+        
+
+        home.component.html
+            <button class="btn btn-default" (click)="onLogin()">Login</button>
+            <button class="btn btn-default" (click)="onLogout()">Logout</button>
+        
+        home.component.ts
+            export class HomeComponent implements OnInit {
+
+                constructor(private router: Router, private authService: AuthService) { }
+                    ...
+
+                onLogin(){
+                    this.authService.login();
+                }
+
+                onLogout(){
+                    this.authService.logout();
+                }
+            }
+
+        * //
 
         auth-guard.service.ts
             @Injectable()
