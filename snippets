@@ -744,3 +744,66 @@ SECTION 11 - CHANGING PAGES WITH ROUTES
         export class AppRoutingModule {
 
         }
+    
+    * Protecting routes with canActivate
+
+        auth.service.ts
+            export class AuthService {
+                loggedIn = false;
+
+                isAuthenticated() {
+                    const promise = new Promise(
+                        (resolve, reject) => {
+                            setTimeout( () => {
+                                resolve(this.loggedIn)
+                            }, 800);
+                        }
+                    );
+
+                    return promise;
+                }
+
+                login() {
+                    this.loggedIn = true;
+                }
+
+                logout() {
+                    this.loggedIn = false;
+                }
+            }
+
+        auth-guard.service.ts
+            @Injectable()
+            export class AuthGuard implements CanActivate {
+                
+                constructor(private authService: AuthService, private router: Router) {}
+
+                canActivate(route: ActivatedRouteSnapshot, 
+                    state: RouterStateSnapshot): Observable<boolean> | Promise<boolean> | boolean {
+                        return this.authService.isAuthenticated()
+                            .then(
+                                (authenticated: boolean) => {
+                                    if(authenticated) {
+                                        return true;
+                                    } else {
+                                        this.router.navigate(['/']);
+                                        return false;
+                                    }
+                                }
+                            )
+                    }
+            }
+        
+        app.module.ts
+            @NgModule({
+            declarations: [
+                ...
+            ],
+            imports: [
+                ...,
+                AppRoutingModule
+            ],
+            providers: [..., AuthService, AuthGuard],
+            bootstrap: [...]
+            })
+            export class AppModule { }
