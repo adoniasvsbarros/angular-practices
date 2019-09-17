@@ -692,3 +692,13 @@ SECTION 11 - CHANGING PAGES WITH ROUTES
             }
 
         }
+
+    * Redirecting and Wildcard Routes
+        Remember to use the wildcard ** after all the other routes
+
+        const appRoutes: Routes = [
+            {path: '', component: HomeComponent},
+            {path: 'users', component: UsersComponent, children: [
+            {path: 'not-found', component: PageNotFoundComponent},
+            {path: '**', redirectTo: '/not-found'}
+        ]
