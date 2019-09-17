@@ -489,8 +489,8 @@ SECTION 11 - CHANGING PAGES WITH ROUTES
           <a routerLink="/">Home</a></li>
         <li 
           role="presentation" 
-          routerLinkActive="active"
-          [routerLinkActiveOptions]="{exact: true}"
+          routerLinkActive="active"  -> Directive that appends the class active when path is active
+          [routerLinkActiveOptions]="{exact: true}" -> Especify that just add active class if the full path is active
           >
           <a routerLink="/servers">Servers</a></li>
         <li 
@@ -546,8 +546,8 @@ SECTION 11 - CHANGING PAGES WITH ROUTES
 
             ngOnInit() {
                 this.user = {
-                id: this.route.snapshot.params['id'],
-                name: this.route.snapshot.params['name']
+                    id: this.route.snapshot.params['id'],
+                    name: this.route.snapshot.params['name']
                 }
             
                 this.route.params.subscribe(
@@ -563,7 +563,7 @@ SECTION 11 - CHANGING PAGES WITH ROUTES
         <p>User with {{ user.id }} loaded.</p>
         <p>User name is {{ user.name }}</p>
     
-    * When using observables, remember to unsubscribe them
+    * When using your own observables, remember to unsubscribe them
         import { Subscription } from 'rxjs';
 
         export class UserComponent implements OnInit, OnDestroy {
@@ -597,10 +597,12 @@ SECTION 11 - CHANGING PAGES WITH ROUTES
         ngOnInit() {
             console.log(this.route.snapshot.queryParams);
             console.log(this.route.snapshot.fragment);
+            this.route.queryParams.subscribe();
+            this.route.fragment.subscribe();
             this.route.params.subscribe();
         }
 
-    * Nested routes
+    * Nested (Child) routes
         const appRoutes: Routes = [
             {path: 'servers', component: ServersComponent, children: [
                 {path: ':id', component: ServerComponent},
@@ -608,9 +610,85 @@ SECTION 11 - CHANGING PAGES WITH ROUTES
             ]}
         ]
 
-        html ( use a child router outlet )
+        html (when using a child component, we need to add a router outlet )
             <router-outlet></router-outlet>
 
-    
+    * Using query params
+        servers html
+            <a
+                [routerLink]="['/servers', server.id]"
+                [queryParams]="{allowEdit: server.id === 3 ? '1' : '0'}"
+                fragment="loading"
+                href="#"
+                class="list-group-item"
+                *ngFor="let server of servers">
+                {{ server.name }}
+            </a>
 
-]
+        server html
+            <button class="btn btn-primary" (click)="onEdit()">Edit Server</button>
+
+        server ts
+            export class ServerComponent implements OnInit {
+                server: {id: number, name: string, status: string};
+
+                constructor(private serversService: ServersService,
+                    private route: ActivatedRoute,
+                    private router: Router) { }
+
+                ngOnInit() {
+                    const id = +this.route.snapshot.params['id'];
+                    this.server = this.serversService.getServer(1);
+                    this.route.params
+                    .subscribe(
+                        (params: Params) => {
+                        this.server = this.serversService.getServer(+params['id']);
+                        }
+                    )
+                }
+
+                onEdit(){
+                    this.router.navigate(['edit'], {relativeTo: this.route, queryParamsHandling: 'preserve'});
+                }
+            }
+        edit server ts
+            export class ServerComponent implements OnInit {
+                server: {id: number, name: string, status: string};
+                constructor(private serversService: ServersService,
+                    private route: ActivatedRoute) { }
+
+                ngOnInit() {
+                    this.route.queryParams.subscribe(
+                    (queryParams: Params) => {
+                        this.allowEdit = queryParams['allowEdit'] === '1' ? true : false;
+                    }
+                    );
+
+                    this.server = this.serversService.getServer(1);
+                    this.serverName = this.server.name;
+                    this.serverStatus = this.server.status;
+                }
+
+        edit server html
+            <h4 *ngIf="!allowEdit">You're not allowed to edit</h4>
+            <div *ngIf="allowEdit">    
+                ...
+            </div>
+
+
+    * Configuring the handling of query params
+        This queryParamsHandling passes the params to the route we are navigating to
+
+        export class ServerComponent implements OnInit {
+            server: {id: number, name: string, status: string};
+
+            constructor(private serversService: ServersService,
+                private route: ActivatedRoute,
+                private router: Router) { }
+
+
+            onEdit(){
+                this.router.navigate(['edit'], {relativeTo: this.route, queryParamsHandling: 'preserve'});
+            }
+
+        }
