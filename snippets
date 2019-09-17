@@ -977,3 +977,47 @@ SECTION 11 - CHANGING PAGES WITH ROUTES
                 ...
             
             ];
+
+    * Resolving Dynamic data with the resolve guard
+
+        server-resolver.service.ts
+            interface Server {
+                id: number;
+                name: string;
+                status: string
+            }
+
+            @Injectable()
+            export class ServerResolver implements Resolve<Server> {
+                constructor(private serversService: ServersService){}
+                
+                resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) : Observable<Server> | Promise<Server> | Server{
+                    return this.serversService.getServer(+route.params['id']);
+                }
+            }
+        
+        server.component.ts
+            export class ServerComponent implements OnInit {
+                server: {id: number, name: string, status: string};
+
+                constructor(private serversService: ServersService,
+                    private route: ActivatedRoute,
+                    private router: Router) { }
+
+                ngOnInit() {
+                    this.route.data
+                    .subscribe(
+                        (data: Data) => {
+                        this.server = data['server'];
+                        }
+                    )
+                }
+            }
+
+        app-routing.module.ts
+            const appRoutes: Routes = [
+                ...,
+                {path: ':id', component: ServerComponent, resolve: {server: ServerResolver}},
+                ,...
+            ];
+
