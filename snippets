@@ -807,3 +807,13 @@ SECTION 11 - CHANGING PAGES WITH ROUTES
             bootstrap: [...]
             })
             export class AppModule { }
+
+        app-routing.module.ts
+            const appRoutes: Routes = [
+                ...,
+                {path: 'servers', canActivate: [AuthGuard], component: ServersComponent, children: [
+                {path: ':id', component: ServerComponent},
+                {path: ':id/edit', component: EditServerComponent}
+                ]},
+                ...
+            ];
