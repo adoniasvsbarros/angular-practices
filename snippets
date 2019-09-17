@@ -700,5 +700,47 @@ SECTION 11 - CHANGING PAGES WITH ROUTES
             {path: '', component: HomeComponent},
             {path: 'users', component: UsersComponent, children: [
             {path: 'not-found', component: PageNotFoundComponent},
-            {path: '**', redirectTo: '/not-found'}
+            {path: '**', redirectTo: '/not-found', pathMatch: 'full'}
         ]
+
+    * Outsorcing the route configuration
+        app.module.ts
+            @NgModule({
+            declarations: [
+                ...
+            ],
+            imports: [
+                ...,
+                AppRoutingModule
+            ],
+            providers: [...],
+            bootstrap: [...]
+            })
+            export class AppModule { }
+
+
+        app-routing.module.ts
+
+        const appRoutes: Routes = [
+            {path: '', component: HomeComponent},
+            {path: 'users', component: UsersComponent, children: [
+            {path: ':id/:name', component: UserComponent}
+            ]},
+            {path: 'servers', component: ServersComponent, children: [
+            {path: ':id', component: ServerComponent},
+            {path: ':id/edit', component: EditServerComponent}
+            ]},
+            {path: 'not-found', component: PageNotFoundComponent},
+            {path: '**', redirectTo: '/not-found', pathMatch: 'full'}
+        
+        ];
+        
+        @NgModule({
+            imports: [
+                RouterModule.forRoot(appRoutes)
+            ],
+            exports: [RouterModule]
+        })
+        export class AppRoutingModule {
+
+        }
