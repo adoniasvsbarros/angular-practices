@@ -17,16 +17,16 @@ export class RecipeService {
                 new Ingredient('french fries', 20)
             ]),
         new Recipe(
-            'Test Recipe', 
-            'This is a simply test', 
+            'Test Recipe 2', 
+            'This is a simply test 2', 
             'https://www.wellplated.com/wp-content/uploads/2017/12/Hoppin-John-recipe-600x629.jpg', 
             [
                 new Ingredient('Meat',1),
                 new Ingredient('french fries', 20)
             ]),        
         new Recipe(
-            'Test Recipe', 
-            'This is a simply test', 
+            'Test Recipe 3', 
+            'This is a simply test 3', 
             'https://www.wellplated.com/wp-content/uploads/2017/12/Hoppin-John-recipe-600x629.jpg', 
             [
                 new Ingredient('Meat',1),
@@ -35,6 +35,10 @@ export class RecipeService {
       ];
 
       constructor(private shoppingListService: ShoppingListService){}
+
+      getRecipe(id: number){
+        return this.recipes[id];
+      }
 
       getRecipes(){
           return this.recipes.slice();
