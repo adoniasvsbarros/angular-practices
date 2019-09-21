@@ -1218,3 +1218,20 @@ SECTION 15 - HANDLING FORMS IN ANGULAR APPS
               #email="ngModel">
               <span class="help-block" *ngIf="!email.valid && email.touched">Please enter a valid email!</span>
         </div>
+    
+    * set Default value
+        app.component.ts
+            defaultQuestion = 'teacher';
+        
+        app.component.html
+            <div class="form-group">
+            <label for="secret">Secret Questions</label>
+            <select 
+                id="secret" 
+                class="form-control"
+                [ngModel]="defaultQuestion"
+                name="secret">
+                <option value="pet">Your first Pet?</option>
+                <option value="teacher">Your first teacher?</option>
+            </select>
+            </div>
