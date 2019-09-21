@@ -1034,3 +1034,27 @@ SECTION 11 - CHANGING PAGES WITH ROUTES
         export class AppRoutingModule {
 
         }
+
+#####################################################################################################
+SECTION 13 - UNDERSTANDING OBSERVABLES
+#####################################################################################################
+
+* A basic observable
+
+    export class HomeComponent implements OnInit, OnDestroy {
+
+    private firstObsSubscription: Subscription;
+
+    constructor() { }
+
+    ngOnInit(): void {
+        this.firstObsSubscription = interval(1000).subscribe(
+        count => {
+            console.log(count);
+        });
+    }
+
+    ngOnDestroy(): void {
+        this.firstObsSubscription.unsubscribe();
+    }
+    }
