@@ -1203,3 +1203,18 @@ SECTION 15 - HANDLING FORMS IN ANGULAR APPS
 
         app.component.html
             <form (ngSubmit)="onSubmit()" #f="ngForm">
+
+    * Form validation and output error messages
+        <div class="form-group">
+            <label for="email">Mail</label>
+            <input 
+              type="email" 
+              id="email" 
+              class="form-control"
+              ngModel
+              name="email"
+              required
+              email
+              #email="ngModel">
+              <span class="help-block" *ngIf="!email.valid && email.touched">Please enter a valid email!</span>
+        </div>
