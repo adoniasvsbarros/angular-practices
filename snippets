@@ -1164,3 +1164,34 @@ SECTION 13 - UNDERSTANDING OBSERVABLES
                     this.activatedSub.unsubscribe();
                 }
             }
+
+#####################################################################################################
+SECTION 15 - HANDLING FORMS IN ANGULAR APPS
+#####################################################################################################
+
+    * Registering the controls
+
+        <form>
+            <div id="user-data">
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input 
+                    type="text" 
+                    id="username" 
+                    class="form-control"
+                    ngModel
+                    name="username">
+                </div>
+            </div>
+            <button class="btn btn-primary" type="submit">Submit</button>
+        </form>
+
+    * Submiting and using the form
+
+        app.component.ts
+            onSubmit(form: NgForm){
+                console.log(form); -> consoles automatic javascript object created by angular automatically from form
+            }
+
+        app.component.html
+            <form (ngSubmit)="onSubmit(f)" #f="ngForm">
