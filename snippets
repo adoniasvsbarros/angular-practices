@@ -1117,3 +1117,50 @@ SECTION 13 - UNDERSTANDING OBSERVABLES
             console.log('completed');
         });
 
+    * Subjects (special type of observable) used to communicate accross different services
+        
+        user.service.ts
+            import { Injectable, EventEmitter } from '@angular/core';
+            import { Subject} from 'rxjs';
+
+            @Injectable({providedIn: 'root'})
+            export class UserService {
+                activatedEmitter = new Subject<boolean>();
+            }
+
+        user.component.html
+            <button class="btn btn-primary" (click)="onActivate()">Activate</button>
+        
+        user.component.ts
+
+            export class UserComponent implements OnInit {
+                id: number;
+
+                constructor(private route: ActivatedRoute, private userService: UserService) {
+                }
+
+                onActivate(){
+                    this.userService.activatedEmitter.next(true);
+                }
+            }
+
+        app.component.html
+              <p *ngIf="userActivated">Activated!</p>
+        
+        app.component.ts
+            export class AppComponent implements OnInit, OnDestroy {
+                userActivated = false;
+                private activatedSub: Subscription;
+
+                constructor(private userService: UserService) {}
+
+                ngOnInit() {
+                    this.activatedSub = this.userService.activatedEmitter.subscribe(didActivate => {
+                    this.userActivated = didActivate;
+                    });
+                }
+
+                ngOnDestroy(){
+                    this.activatedSub.unsubscribe();
+                }
+            }
