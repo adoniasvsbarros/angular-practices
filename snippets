@@ -1195,3 +1195,11 @@ SECTION 15 - HANDLING FORMS IN ANGULAR APPS
 
         app.component.html
             <form (ngSubmit)="onSubmit(f)" #f="ngForm">
+
+    * Accessing form with view child
+
+        app.component.ts
+            @ViewChild('f', {static: true}) signupForm: NgForm; 
+
+        app.component.html
+            <form (ngSubmit)="onSubmit()" #f="ngForm">
