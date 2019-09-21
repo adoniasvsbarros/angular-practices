@@ -1235,3 +1235,18 @@ SECTION 15 - HANDLING FORMS IN ANGULAR APPS
                 <option value="teacher">Your first teacher?</option>
             </select>
             </div>
+    
+    * forms two way binding
+        app.component.ts
+            answer='';
+
+        app.component.html
+        <div class="form-group">
+          <textarea 
+            class="form-control"
+            name="questionAnswer" 
+            rows="3"
+            [(ngModel)]="answer">
+          </textarea>
+        </div>
+        <p>Your reply {{ answer }}</p>
