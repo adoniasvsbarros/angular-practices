@@ -1021,3 +1021,16 @@ SECTION 11 - CHANGING PAGES WITH ROUTES
                 ,...
             ];
 
+    * Understanding location strategies
+        
+        using hash 
+        
+        @NgModule({
+            imports: [
+                RouterModule.forRoot(appRoutes, {useHash: true})
+            ],
+            exports: [RouterModule]
+        })
+        export class AppRoutingModule {
+
+        }
