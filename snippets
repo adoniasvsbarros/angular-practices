@@ -1301,3 +1301,35 @@ SECTION 15 - HANDLING FORMS IN ANGULAR APPS
 
             app.component.ts
                 genders = ['male', 'female'];
+
+        * Setting and Patching form values
+
+            app.component.ts
+              suggestUsername() {
+                const suggestedUsername = 'Superuser';
+
+                modo 1 - setting
+
+                this.signupForm.setValue({
+                    userData: {
+                    username: suggestedUsername,
+                    email: '',
+                    },secret: 'pet',
+                    questionAnswer: '',
+                    gender: 'male'
+                    
+                });
+
+                modo 2 - patching
+                this.signupForm.form.patchValue({
+                    userData: {
+                    username: suggestedUsername
+                    }
+                });
+              }
+
+              app.component.html
+                <button 
+                class="btn btn-default" 
+                type="button"
+                (click)="suggestUsername()">Suggest an Username</button>
