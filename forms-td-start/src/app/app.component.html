@@ -90,3 +90,64 @@
     </div>
   </div>
 </div>
+ 
+
+<div class="container">
+  <div class="row">
+    <div class="col-xs-12 col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
+      <form (ngSubmit)="submit()" #f="ngForm">
+        <div class="form-group">
+          <label for="mail">Mail Address</label>
+          <input
+            id="mail"
+            class="form-control"
+            type="text"
+            name="mail"
+            email
+            required
+            ngModel
+            #email="ngModel"
+          />
+          <span *ngIf="!email.valid && email.touched" class="help-block"
+            >Please enter a valid email</span
+          >
+        </div>
+        <div class="form-group">
+          <label for="subscription">Choose a subscription</label>
+          <select
+            name="subscription"
+            id="subscription"
+            ngModel
+            class="form-control"
+            [ngModel]="selectedSubscription"
+          >
+            <option
+              *ngFor="let subscription of subscriptions"
+              [value]="subscription"
+            >
+              {{ subscription }}
+            </option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input
+            id="password"
+            class="form-control"
+            name="password"
+            class="form-control"
+            type="text"
+            ngModel
+            required
+            #password="ngModel"
+          />
+          <span *ngIf="!password.valid && password.touched" class="help-block"
+            >Please enter a valid password</span
+          >
+        </div>
+        <button class="btn btn-primary" type="submit">Submit</button>
+        <p *ngIf="!f.valid && f.touched">The form is invalid</p>
+      </form>
+    </div>
+  </div>
+</div>
