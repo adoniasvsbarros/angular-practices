@@ -57,7 +57,7 @@ export class AppComponent {
   onAddServer() {
     this.servers.push({
       instanceType: "small",
-      name: "random server",
+      name: "New",
       status: "stable",
       started: new Date(15, 1, 2017),
     });
