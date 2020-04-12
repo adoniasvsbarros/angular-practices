@@ -1,12 +1,4 @@
-import {
-  Component,
-  OnInit,
-  ElementRef,
-  ViewChild,
-  EventEmitter,
-  Output,
-  OnDestroy,
-} from "@angular/core";
+import { Component, OnInit, ViewChild, OnDestroy } from "@angular/core";
 import { Ingredient } from "src/app/shared/ingredient.module";
 import { ShoppingListService } from "../shopping-list.service";
 import { NgForm } from "@angular/forms";
