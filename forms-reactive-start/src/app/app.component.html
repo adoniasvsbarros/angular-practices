@@ -1,29 +1,177 @@
-<div class="container">
+<!-- <div class="container">
   <div class="row">
     <div class="col-xs-12 col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
-      <form>
-        <div class="form-group">
-          <label for="username">Username</label>
-          <input
-            type="text"
-            id="username"
-            class="form-control">
-        </div>
-        <div class="form-group">
-          <label for="email">email</label>
-          <input
-            type="text"
-            id="email"
-            class="form-control">
+      <form [formGroup]="signupForm" (ngSubmit)="onSubmit()">
+        <div formGroupName="userData">
+          <div class="form-group">
+            <label for="username">Username</label>
+            <input
+              type="text"
+              id="username"
+              class="form-control"
+              formControlName="username"
+            />
+            <span
+              *ngIf="
+                !signupForm.get('userData.username').valid &&
+                signupForm.get('userData.username').touched
+              "
+              class="help-block"
+              ><span
+                *ngIf="
+                  signupForm.get('userData.username').errors['nameIsForbidden']
+                "
+              >
+                This name is invalid
+              </span>
+              <span
+                *ngIf="signupForm.get('userData.username').errors['required']"
+              >
+                This field is required!
+              </span>
+            </span>
+          </div>
+          <div class="form-group">
+            <label for="email">email</label>
+            <input
+              type="text"
+              id="email"
+              class="form-control"
+              formControlName="email"
+            />
+            <span
+              *ngIf="
+                !signupForm.get('userData.email').valid &&
+                signupForm.get('userData.email').touched
+              "
+              class="help-block"
+              >Please enter a valid email!</span
+            >
+          </div>
         </div>
         <div class="radio" *ngFor="let gender of genders">
           <label>
-            <input
-              type="radio"
-              [value]="gender">{{ gender }}
+            <input type="radio" [value]="gender" formControlName="gender" />
+            {{ gender }}
           </label>
         </div>
+
+        <div formArrayName="hobbies">
+          <h4>Your Hobbies</h4>
+          <button class="btn btn-default" type="button" (click)="onAddHobby()">
+            Add Hobby
+          </button>
+          <div
+            class="form-group"
+            *ngFor="let hobbyControl of hobbyControls; let i = index"
+          >
+            <input type="text" class="form-control" [formControlName]="i" />
+          </div>
+        </div>
+
         <button class="btn btn-primary" type="submit">Submit</button>
+        <span *ngIf="!signupForm.valid && signupForm.touched" class="help-block"
+          >Please enter a valid data</span
+        >
+      </form>
+    </div>
+  </div>
+</div> -->
+
+<div class="container">
+  <div class="row">
+    <div class="col-xs-12 col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
+      <form [formGroup]="exerciseForm" (ngSubmit)="submit()">
+        <div class="form-group">
+          <div>
+            <label for="projectName">ProjectName</label>
+            <input
+              type="text"
+              id="projectName"
+              formControlName="projectName"
+              class="form-control"
+            />
+            <span
+              *ngIf="
+                exerciseForm.get('projectName').errors?.required &&
+                exerciseForm.get('projectName').touched
+              "
+              class="help-block"
+            >
+              Project Name is Required
+            </span>
+            <span
+              *ngIf="
+                exerciseForm.get('projectName').errors
+                  ?.projectNameIsForbidden &&
+                exerciseForm.get('projectName').touched
+              "
+              class="help-block"
+            >
+              This project name is forbidden
+            </span>
+          </div>
+          <div class="form-group">
+            <label for="email">Email</label>
+            <input
+              type="text"
+              id="email"
+              formControlName="email"
+              class="form-control"
+            />
+            <span
+              *ngIf="
+                exerciseForm.get('email').errors?.required &&
+                exerciseForm.get('email').touched
+              "
+              class="help-block"
+            >
+              Email is required
+            </span>
+            <span
+              *ngIf="
+                exerciseForm.get('email').errors?.email &&
+                exerciseForm.get('email').touched
+              "
+              class="help-block"
+            >
+              Email is invalid
+            </span>
+          </div>
+          <div class="form-group">
+            <label for="projectStatus">Project Status </label>
+            <select id="projectStatus" formControlName="projectStatus">
+              <option *ngFor="let status of statuses" [value]="status">
+                {{ status }}
+              </option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <input
+              type="radio"
+              id="one"
+              value="one"
+              formControlName="projectLevel"
+            />
+            <label for="one">One</label>
+            <input
+              type="radio"
+              id="two"
+              value="two"
+              formControlName="projectLevel"
+            />
+            <label for="two">Two</label>
+            <input
+              type="radio"
+              id="three"
+              value="three"
+              formControlName="projectLevel"
+            />
+            <label for="three">Three</label>
+          </div>
+          <button class="btn btn-primary" type="submit">Submit</button>
+        </div>
       </form>
     </div>
   </div>
