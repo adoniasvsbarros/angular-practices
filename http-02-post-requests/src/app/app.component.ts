@@ -2,6 +2,7 @@ import { Component, OnInit } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { map } from "rxjs/operators";
 import { Post } from "./post.model";
+import { PostService } from "./posts.service";
 
 @Component({
   selector: "app-root",
@@ -12,27 +13,29 @@ export class AppComponent implements OnInit {
   loadedPosts: Post[] = [];
   isFetching = false;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private postsService: PostService) {}
 
   ngOnInit() {
-    this.fetchPosts();
+    this.postsService.fetchPosts().subscribe((posts) => {
+      this.isFetching = false;
+      this.loadedPosts = posts;
+    });
   }
 
   onCreatePost(postData: { title: string; content: string }) {
-    // Send Http request
-    this.http
-      .post<{ name: string }>(
-        "https://angular-basics-8bdae.firebaseio.com//posts.json",
-        postData
-      )
+    this.postsService
+      .createAndStorePost(postData.title, postData.content)
       .subscribe((responseData) => {
         console.log(responseData);
       });
   }
 
   onFetchPosts() {
-    this.fetchPosts();
-    // Send Http request
+    this.isFetching = true;
+    this.postsService.fetchPosts().subscribe((posts) => {
+      this.isFetching = false;
+      this.loadedPosts = posts;
+    });
   }
 
   onClearPosts() {
@@ -41,24 +44,6 @@ export class AppComponent implements OnInit {
 
   private fetchPosts() {
     this.isFetching = true;
-    this.http
-      .get<{ [key: string]: Post }>(
-        "https://angular-basics-8bdae.firebaseio.com//posts.json"
-      )
-      .pipe(
-        map((responseData) => {
-          const postsArray: Post[] = [];
-          for (const key in responseData) {
-            if (responseData.hasOwnProperty(key)) {
-              postsArray.push({ ...responseData[key], id: key });
-            }
-          }
-          return postsArray;
-        })
-      )
-      .subscribe((posts) => {
-        this.isFetching = false;
-        this.loadedPosts = posts;
-      });
+    this.postsService.fetchPosts();
   }
 }
