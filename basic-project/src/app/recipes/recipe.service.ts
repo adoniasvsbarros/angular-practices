@@ -8,53 +8,60 @@ import { Subject } from "rxjs";
 export class RecipeService {
   recipesChanged = new Subject<Recipe[]>();
 
-  private recipes: Recipe[] = [
-    new Recipe(
-      "Test Recipe",
-      "This is a simply test",
-      "https://www.wellplated.com/wp-content/uploads/2017/12/Hoppin-John-recipe-600x629.jpg",
-      [new Ingredient("Meat", 1), new Ingredient("french fries", 20)]
-    ),
-    new Recipe(
-      "Test Recipe 2",
-      "This is a simply test 2",
-      "https://www.wellplated.com/wp-content/uploads/2017/12/Hoppin-John-recipe-600x629.jpg",
-      [new Ingredient("Meat", 1), new Ingredient("french fries", 20)]
-    ),
-    new Recipe(
-      "Test Recipe 3",
-      "This is a simply test 3",
-      "https://www.wellplated.com/wp-content/uploads/2017/12/Hoppin-John-recipe-600x629.jpg",
-      [new Ingredient("Meat", 1), new Ingredient("french fries", 20)]
-    ),
-  ];
+  // private recipes: Recipe[] = [
+  //   new Recipe(
+  //     "Test Recipe",
+  //     "This is a simply test",
+  //     "https://www.wellplated.com/wp-content/uploads/2017/12/Hoppin-John-recipe-600x629.jpg",
+  //     [new Ingredient("Meat", 1), new Ingredient("french fries", 20)]
+  //   ),
+  //   new Recipe(
+  //     "Test Recipe 2",
+  //     "This is a simply test 2",
+  //     "https://www.wellplated.com/wp-content/uploads/2017/12/Hoppin-John-recipe-600x629.jpg",
+  //     [new Ingredient("Meat", 1), new Ingredient("french fries", 20)]
+  //   ),
+  //   new Recipe(
+  //     "Test Recipe 3",
+  //     "This is a simply test 3",
+  //     "https://www.wellplated.com/wp-content/uploads/2017/12/Hoppin-John-recipe-600x629.jpg",
+  //     [new Ingredient("Meat", 1), new Ingredient("french fries", 20)]
+  //   ),
+  // ];
+
+  private recipes: Recipe[] = [];
 
   constructor(private shoppingListService: ShoppingListService) {}
 
-  getRecipe(id: number) {
+  getRecipe(id: number): Recipe {
     return this.recipes[id];
   }
 
-  getRecipes() {
+  getRecipes(): Recipe[] {
     return this.recipes.slice();
   }
 
-  addRecipe(recipe: Recipe) {
+  addRecipe(recipe: Recipe): void {
     this.recipes.push(recipe);
     this.recipesChanged.next(this.recipes.slice());
   }
 
-  updateRecipe(index: number, recipe: Recipe) {
+  updateRecipe(index: number, recipe: Recipe): void {
     this.recipes[index] = recipe;
     this.recipesChanged.next(this.recipes.slice());
   }
 
-  deleteRecipe(index: number) {
+  setRecipes(recipes: Recipe[]): void {
+    this.recipes = recipes;
+    this.recipesChanged.next(this.recipes.slice());
+  }
+
+  deleteRecipe(index: number): void {
     this.recipes.splice(index, 1);
     this.recipesChanged.next(this.recipes.slice());
   }
 
-  addIngredientsToShoppingList(ingredients: Ingredient[]) {
+  addIngredientsToShoppingList(ingredients: Ingredient[]): void {
     this.shoppingListService.addIngredients(ingredients);
   }
 }
