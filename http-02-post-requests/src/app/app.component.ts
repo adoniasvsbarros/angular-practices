@@ -1,21 +1,28 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, OnDestroy } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { map } from "rxjs/operators";
 import { Post } from "./post.model";
 import { PostService } from "./posts.service";
+import { Subscription } from "rxjs";
 
 @Component({
   selector: "app-root",
   templateUrl: "./app.component.html",
   styleUrls: ["./app.component.css"],
 })
-export class AppComponent implements OnInit {
+export class AppComponent implements OnInit, OnDestroy {
   loadedPosts: Post[] = [];
   isFetching = false;
+  error = null;
+  subscription: Subscription;
 
   constructor(private http: HttpClient, private postsService: PostService) {}
 
   ngOnInit() {
+    this.subscription = this.postsService.error.subscribe((errorMessage) => {
+      this.error = errorMessage;
+    });
+
     this.postsService.fetchPosts().subscribe((posts) => {
       this.isFetching = false;
       this.loadedPosts = posts;
@@ -23,27 +30,34 @@ export class AppComponent implements OnInit {
   }
 
   onCreatePost(postData: { title: string; content: string }) {
-    this.postsService
-      .createAndStorePost(postData.title, postData.content)
-      .subscribe((responseData) => {
-        console.log(responseData);
-      });
+    this.postsService.createAndStorePost(postData.title, postData.content);
   }
 
   onFetchPosts() {
     this.isFetching = true;
-    this.postsService.fetchPosts().subscribe((posts) => {
-      this.isFetching = false;
-      this.loadedPosts = posts;
+    this.postsService.fetchPosts().subscribe(
+      (posts) => {
+        this.isFetching = false;
+        this.loadedPosts = posts;
+      },
+      (error) => {
+        this.isFetching = false;
+        this.error = error.message;
+      }
+    );
+  }
+
+  onClearPosts(id: string) {
+    this.postsService.deletePosts().subscribe(() => {
+      this.loadedPosts = [];
     });
   }
 
-  onClearPosts() {
-    // Send Http request
+  onHandleError() {
+    this.error = null;
   }
 
-  private fetchPosts() {
-    this.isFetching = true;
-    this.postsService.fetchPosts();
+  ngOnDestroy() {
+    this.subscription.unsubscribe();
   }
 }
